@@ -20,7 +20,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
   String emotion = '';
   String details = '';
   DateTime? occurredAt;
-  TimeOfDay? occurredTime = TimeOfDay.now(); // Инициализация текущим временем
+  TimeOfDay? occurredTime = TimeOfDay.now();
 
   @override
   void initState() {
@@ -33,7 +33,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
     String? token = prefs.getString('token');
 
     final response = await http.get(
-      Uri.parse('http://192.168.1.162:3000/event?token=$token&id=${widget.eventId}'),
+      Uri.parse('http://192.168.5.153:3000/event?token=$token&id=${widget.eventId}'),
     );
 
     if (response.statusCode == 200) {
@@ -67,7 +67,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
       ).toUtc();
 
       final response = await http.put(
-        Uri.parse('http://192.168.1.162:3000/event'),
+        Uri.parse('http://192.168.5.153:3000/event'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -98,7 +98,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
     String? token = prefs.getString('token');
 
     final response = await http.delete(
-      Uri.parse('http://192.168.1.162:3000/event'),
+      Uri.parse('http://192.168.5.153:3000/event'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

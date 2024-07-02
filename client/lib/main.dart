@@ -4,7 +4,7 @@ import 'register.dart';
 import 'login.dart';
 import 'home.dart';
 import 'memories.dart';
-import 'event_details.dart'; // Импортируйте EventDetailsPage
+import 'event_details.dart';
 
 void main() {
   runApp(MyApp());

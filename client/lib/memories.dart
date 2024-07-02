@@ -15,7 +15,7 @@ class _MemoriesPageState extends State<MemoriesPage> {
   String emotion = '';
   String details = '';
   DateTime? occurredAt;
-  TimeOfDay? occurredTime = TimeOfDay.now(); // Инициализация текущим временем
+  TimeOfDay? occurredTime = TimeOfDay.now();
 
   Future<void> _addMemory() async {
     if (_formKey.currentState!.validate()) {
@@ -36,7 +36,7 @@ class _MemoriesPageState extends State<MemoriesPage> {
       );
 
       final response = await http.post(
-        Uri.parse('http://192.168.1.162:3000/memories'),
+        Uri.parse('http://192.168.5.153:3000/memories'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },

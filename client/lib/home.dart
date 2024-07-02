@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> {
     String? token = prefs.getString('token');
 
     final response = await http.get(
-      Uri.parse('http://192.168.1.162:3000/memories?token=$token&date=${DateTime.now().toIso8601String().split('T')[0]}'),
+      Uri.parse('http://192.168.5.153:3000/memories?token=$token&date=${DateTime.now().toIso8601String().split('T')[0]}'),
     );
 
     if (response.statusCode == 200) {
