@@ -13,7 +13,7 @@ class _MemoriesPageState extends State<MemoriesPage> {
   String emotion = '';
   String details = '';
   DateTime? occurredAt;
-  TimeOfDay? occurredTime = TimeOfDay.now(); // Инициализация текущим временем
+  TimeOfDay? occurredTime = TimeOfDay.now();
   final MemoriesService _memoriesService = MemoriesService();
 
   Future<void> _addMemory() async {

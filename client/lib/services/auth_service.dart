@@ -1,6 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 
 class AuthService {
   final String baseUrl = 'http://192.168.5.5:3000';
@@ -28,7 +29,7 @@ class AuthService {
     }
   }
 
-  Future<bool> register(String name, String email, String password) async {
+  Future<bool> register(String name, String email, String password, DateTime? birthDate, String gender) async {
     final response = await http.post(
       Uri.parse('$baseUrl/register'),
       headers: <String, String>{
@@ -38,9 +39,10 @@ class AuthService {
         'name': name,
         'email': email,
         'password': password,
+        'birth_date': DateFormat('yyyy-MM-dd').format(birthDate!),
+        'gender': gender,
       }),
     );
-
     return response.statusCode == 201;
   }
 

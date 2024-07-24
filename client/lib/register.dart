@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'services/auth_service.dart';
+import 'package:intl/intl.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -11,17 +12,32 @@ class _RegisterPageState extends State<RegisterPage> {
   String name = '';
   String email = '';
   String password = '';
+  String gender = 'Male';
+  DateTime? birthDate;
   final AuthService _authService = AuthService();
 
   Future<void> _register() async {
     if (_formKey.currentState!.validate()) {
-      bool success = await _authService.register(name, email, password);
+      bool success = await _authService.register(name, email, password, birthDate, gender);
       if (success) {
         Navigator.pushReplacementNamed(context, '/login');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Registration failed')));
       }
     }
+  }
+
+  Future<void> _selectBirthDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime(2000, 1, 1),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null && picked != birthDate)
+      setState(() {
+        birthDate = picked;
+      });
   }
 
   @override
@@ -78,6 +94,25 @@ class _RegisterPageState extends State<RegisterPage> {
                   }
                   return null;
                 },
+              ),
+              DropdownButtonFormField<String>(
+                value: gender,
+                decoration: InputDecoration(labelText: 'Gender'),
+                items: ['Male', 'Female', 'Other'].map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (newValue) {
+                  setState(() {
+                    gender = newValue!;
+                  });
+                },
+              ),
+              ElevatedButton(
+                onPressed: () => _selectBirthDate(context),
+                child: Text(birthDate == null ? 'Select Birth Date' : DateFormat('yyyy-MM-dd').format(birthDate!)),
               ),
               ElevatedButton(
                 onPressed: _register,

@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _loadUserInfo();
-    _loadAllMemories();
+    _loadSavedDateAndMemories();
   }
 
   Future<void> _loadUserInfo() async {
@@ -32,11 +32,16 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  Future<void> _loadAllMemories() async {
-    final memoryList = await _memoriesService.getAllMemories();
-    setState(() {
-      memories = memoryList;
-    });
+  Future<void> _loadSavedDateAndMemories() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? date = prefs.getString('selectedDate');
+    if (date != null) {
+      selectedDate = DateFormat('yyyy-MM-dd').parse(date);
+    } else {
+      selectedDate = DateTime.now();
+      await _saveSelectedDate(selectedDate!);
+    }
+    _loadMemoriesByDate(DateFormat('yyyy-MM-dd').format(selectedDate!));
   }
 
   Future<void> _loadMemoriesByDate(String date) async {
@@ -44,6 +49,11 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       memories = memoryList;
     });
+  }
+
+  Future<void> _saveSelectedDate(DateTime date) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('selectedDate', DateFormat('yyyy-MM-dd').format(date));
   }
 
   void _onItemTapped(int index) {
@@ -59,7 +69,7 @@ class _HomePageState extends State<HomePage> {
       arguments: eventId,
     ).then((value) {
       if (value == true) {
-        _loadAllMemories();
+        _loadMemoriesByDate(DateFormat('yyyy-MM-dd').format(selectedDate!));
       }
     });
   }
@@ -67,62 +77,65 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     List<Widget> _pages = <Widget>[
-      Center(
-        child: Column(
-          children: [
-            ElevatedButton(
+      Scaffold(
+        appBar: AppBar(
+          title: Text('Home'),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.logout),
               onPressed: () async {
-                DateTime? pickedDate = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime(1900),
-                  lastDate: DateTime.now(),
-                );
-                if (pickedDate != null) {
-                  final date = DateFormat('yyyy-MM-dd').format(pickedDate);
-                  setState(() {
-                    selectedDate = pickedDate;
-                  });
-                  _loadMemoriesByDate(date);
-                }
+                await _authService.logout();
+                Navigator.pushReplacementNamed(context, '/login');
               },
-              child: Text(selectedDate == null ? 'Select Date' : DateFormat('yyyy-MM-dd').format(selectedDate!)),
-            ),
-            Expanded(
-              child: memories.isEmpty
-                  ? name == null
-                  ? CircularProgressIndicator()
-                  : Text('Hello, $name', style: Theme.of(context).textTheme.headlineMedium)
-                  : ListView.builder(
-                itemCount: memories.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(memories[index]['event']),
-                    subtitle: Text(memories[index]['emotion']),
-                    onTap: () => _onEventTapped(memories[index]['id']),
-                  );
-                },
-              ),
-            ),
+            )
           ],
+        ),
+        body: Center(
+          child: Column(
+            children: [
+              ElevatedButton(
+                onPressed: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: selectedDate ?? DateTime.now(),
+                    firstDate: DateTime(1900),
+                    lastDate: DateTime.now(),
+                  );
+                  if (pickedDate != null) {
+                    final date = DateFormat('yyyy-MM-dd').format(pickedDate);
+                    setState(() {
+                      selectedDate = pickedDate;
+                    });
+                    await _saveSelectedDate(pickedDate);
+                    _loadMemoriesByDate(date);
+                  }
+                },
+                child: Text(selectedDate == null ? 'Select Date' : DateFormat('yyyy-MM-dd').format(selectedDate!)),
+              ),
+              Expanded(
+                child: memories.isEmpty
+                    ? name == null
+                    ? CircularProgressIndicator()
+                    : Text('Hello, $name', style: Theme.of(context).textTheme.headlineMedium)
+                    : ListView.builder(
+                  itemCount: memories.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(memories[index]['event']),
+                      subtitle: Text(memories[index]['emotion']),
+                      onTap: () => _onEventTapped(memories[index]['id']),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       MemoriesPage(),
     ];
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Home'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: () async {
-              await _authService.logout();
-              Navigator.pushReplacementNamed(context, '/login');
-            },
-          )
-        ],
-      ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[

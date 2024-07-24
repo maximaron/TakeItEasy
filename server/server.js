@@ -3,7 +3,6 @@ const mysql = require('mysql2');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
-const os = require('os');
 const app = express();
 const port = 3000;
 const secret = 'your_jwt_secret';
@@ -163,6 +162,7 @@ app.delete('/event', (req, res) => {
     });
 });
 
+const os = require('os');
 function getLocalExternalIP() {
     const interfaces = os.networkInterfaces();
     for (const name of Object.keys(interfaces)) {
@@ -177,5 +177,5 @@ function getLocalExternalIP() {
 
 const localExternalIP = getLocalExternalIP();
 app.listen(port, () => {
-    console.log(`Server is running at http:${localExternalIP}:${port}`);
+    console.log(`Server is running at http://${localExternalIP}:${port}`);
 });
