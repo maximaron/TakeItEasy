@@ -3,6 +3,8 @@ import 'services/memories_service.dart';
 import 'package:intl/intl.dart';
 
 class MemoriesPage extends StatefulWidget {
+  const MemoriesPage({super.key});
+
   @override
   _MemoriesPageState createState() => _MemoriesPageState();
 }
@@ -19,7 +21,7 @@ class _MemoriesPageState extends State<MemoriesPage> {
   Future<void> _addMemory() async {
     if (_formKey.currentState!.validate()) {
       if (occurredAt == null || occurredTime == null) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please select date and time')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please select date and time')));
         return;
       }
 
@@ -33,10 +35,10 @@ class _MemoriesPageState extends State<MemoriesPage> {
 
       bool success = await _memoriesService.addMemory(event, emotion, details, dateTime);
       if (success) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Memory added successfully!')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Memory added successfully!')));
         Navigator.pushReplacementNamed(context, '/home');
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to add memory')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to add memory')));
       }
     }
   }
@@ -48,7 +50,7 @@ class _MemoriesPageState extends State<MemoriesPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Memory'),
+        title: const Text('Add Memory'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -57,7 +59,7 @@ class _MemoriesPageState extends State<MemoriesPage> {
           child: ListView(
             children: <Widget>[
               TextFormField(
-                decoration: InputDecoration(labelText: 'Event'),
+                decoration: const InputDecoration(labelText: 'Event'),
                 onChanged: (value) {
                   setState(() {
                     event = value;
@@ -71,7 +73,7 @@ class _MemoriesPageState extends State<MemoriesPage> {
                 },
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Emotion'),
+                decoration: const InputDecoration(labelText: 'Emotion'),
                 onChanged: (value) {
                   setState(() {
                     emotion = value;
@@ -85,7 +87,7 @@ class _MemoriesPageState extends State<MemoriesPage> {
                 },
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Details (optional)'),
+                decoration: const InputDecoration(labelText: 'Details (optional)'),
                 onChanged: (value) {
                   setState(() {
                     details = value;
@@ -124,7 +126,7 @@ class _MemoriesPageState extends State<MemoriesPage> {
               ),
               ElevatedButton(
                 onPressed: _addMemory,
-                child: Text('Add Memory'),
+                child: const Text('Add Memory'),
               ),
             ],
           ),

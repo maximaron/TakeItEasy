@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'services/memories_service.dart';
 import 'package:intl/intl.dart';
 
 class EventDetailsPage extends StatefulWidget {
   final int eventId;
 
-  EventDetailsPage({required this.eventId});
+  const EventDetailsPage({super.key, required this.eventId});
 
   @override
   _EventDetailsPageState createState() => _EventDetailsPageState();
@@ -44,7 +43,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
   Future<void> _updateEvent() async {
     if (_formKey.currentState!.validate()) {
       if (occurredAt == null || occurredTime == null) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please select date and time')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please select date and time')));
         return;
       }
 
@@ -58,13 +57,13 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
 
       bool success = await _memoriesService.updateMemory(widget.eventId, event, emotion, details, dateTime);
       if (success) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Event updated successfully!')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Event updated successfully!')));
         setState(() {
           isEditing = false;
         });
         _loadEventDetails();
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to update event')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to update event')));
       }
     }
   }
@@ -72,10 +71,10 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
   Future<void> _deleteEvent() async {
     bool success = await _memoriesService.deleteMemory(widget.eventId);
     if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Event deleted successfully!')));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Event deleted successfully!')));
       Navigator.pop(context, true);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to delete event')));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to delete event')));
     }
   }
 
@@ -86,10 +85,10 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Event Details'),
+        title: const Text('Event Details'),
         actions: [
           IconButton(
-            icon: Icon(Icons.delete),
+            icon: const Icon(Icons.delete),
             onPressed: _deleteEvent,
           ),
         ],
@@ -102,7 +101,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
           child: ListView(
             children: <Widget>[
               TextFormField(
-                decoration: InputDecoration(labelText: 'Event'),
+                decoration: const InputDecoration(labelText: 'Event'),
                 initialValue: event,
                 onChanged: (value) {
                   setState(() {
@@ -117,7 +116,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                 },
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Emotion'),
+                decoration: const InputDecoration(labelText: 'Emotion'),
                 initialValue: emotion,
                 onChanged: (value) {
                   setState(() {
@@ -132,7 +131,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                 },
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Details'),
+                decoration: const InputDecoration(labelText: 'Details'),
                 initialValue: details,
                 onChanged: (value) {
                   setState(() {
@@ -172,7 +171,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
               ),
               ElevatedButton(
                 onPressed: _updateEvent,
-                child: Text('Update Event'),
+                child: const Text('Update Event'),
               ),
             ],
           ),
@@ -180,19 +179,19 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
             : ListView(
           children: [
             ListTile(
-              title: Text('Event'),
+              title: const Text('Event'),
               subtitle: Text(event),
             ),
             ListTile(
-              title: Text('Emotion'),
+              title: const Text('Emotion'),
               subtitle: Text(emotion),
             ),
             ListTile(
-              title: Text('Details'),
+              title: const Text('Details'),
               subtitle: Text(details),
             ),
             ListTile(
-              title: Text('Occurred At'),
+              title: const Text('Occurred At'),
               subtitle: Text(occurredAt == null
                   ? ''
                   : '${dateFormat.format(occurredAt!)} at ${timeFormat.format(DateTime(occurredAt!.year, occurredAt!.month, occurredAt!.day, occurredTime!.hour, occurredTime!.minute))}'),
@@ -203,7 +202,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                   isEditing = true;
                 });
               },
-              child: Text('Edit'),
+              child: const Text('Edit'),
             ),
           ],
         ),

@@ -6,6 +6,8 @@ import 'memories.dart';
 import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -76,13 +78,13 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> _pages = <Widget>[
+    List<Widget> pages = <Widget>[
       Scaffold(
         appBar: AppBar(
-          title: Text('Home'),
+          title: const Text('Home'),
           actions: [
             IconButton(
-              icon: Icon(Icons.logout),
+              icon: const Icon(Icons.logout),
               onPressed: () async {
                 await _authService.logout();
                 Navigator.pushReplacementNamed(context, '/login');
@@ -115,7 +117,7 @@ class _HomePageState extends State<HomePage> {
               Expanded(
                 child: memories.isEmpty
                     ? name == null
-                    ? CircularProgressIndicator()
+                    ? const CircularProgressIndicator()
                     : Text('Hello, $name', style: Theme.of(context).textTheme.headlineMedium)
                     : ListView.builder(
                   itemCount: memories.length,
@@ -132,11 +134,11 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      MemoriesPage(),
+      const MemoriesPage(),
     ];
 
     return Scaffold(
-      body: _pages[_selectedIndex],
+      body: pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(

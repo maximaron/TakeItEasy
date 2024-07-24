@@ -3,6 +3,8 @@ import 'services/auth_service.dart';
 import 'package:intl/intl.dart';
 
 class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
+
   @override
   _RegisterPageState createState() => _RegisterPageState();
 }
@@ -22,7 +24,7 @@ class _RegisterPageState extends State<RegisterPage> {
       if (success) {
         Navigator.pushReplacementNamed(context, '/login');
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Registration failed')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Registration failed')));
       }
     }
   }
@@ -34,17 +36,18 @@ class _RegisterPageState extends State<RegisterPage> {
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
     );
-    if (picked != null && picked != birthDate)
+    if (picked != null && picked != birthDate) {
       setState(() {
         birthDate = picked;
       });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Register'),
+        title: const Text('Register'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -53,7 +56,7 @@ class _RegisterPageState extends State<RegisterPage> {
           child: Column(
             children: <Widget>[
               TextFormField(
-                decoration: InputDecoration(labelText: 'Name'),
+                decoration: const InputDecoration(labelText: 'Name'),
                 onChanged: (value) {
                   setState(() {
                     name = value;
@@ -67,7 +70,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 },
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Email'),
+                decoration: const InputDecoration(labelText: 'Email'),
                 onChanged: (value) {
                   setState(() {
                     email = value;
@@ -81,7 +84,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 },
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Password'),
+                decoration: const InputDecoration(labelText: 'Password'),
                 obscureText: true,
                 onChanged: (value) {
                   setState(() {
@@ -97,7 +100,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
               DropdownButtonFormField<String>(
                 value: gender,
-                decoration: InputDecoration(labelText: 'Gender'),
+                decoration: const InputDecoration(labelText: 'Gender'),
                 items: ['Male', 'Female', 'Other'].map((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
@@ -116,7 +119,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
               ElevatedButton(
                 onPressed: _register,
-                child: Text('Register'),
+                child: const Text('Register'),
               ),
             ],
           ),

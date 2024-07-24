@@ -7,10 +7,12 @@ import 'memories.dart';
 import 'event_details.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -18,12 +20,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: AuthCheckPage(),
+      home: const AuthCheckPage(),
       routes: {
-        '/register': (context) => RegisterPage(),
-        '/login': (context) => LoginPage(),
-        '/home': (context) => HomePage(),
-        '/memories': (context) => MemoriesPage(),
+        '/register': (context) => const RegisterPage(),
+        '/login': (context) => const LoginPage(),
+        '/home': (context) => const HomePage(),
+        '/memories': (context) => const MemoriesPage(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == '/event-details') {
@@ -41,6 +43,8 @@ class MyApp extends StatelessWidget {
 }
 
 class AuthCheckPage extends StatefulWidget {
+  const AuthCheckPage({super.key});
+
   @override
   _AuthCheckPageState createState() => _AuthCheckPageState();
 }
@@ -64,7 +68,7 @@ class _AuthCheckPageState extends State<AuthCheckPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(
         child: CircularProgressIndicator(),
       ),
