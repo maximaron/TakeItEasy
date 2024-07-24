@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'services/auth_service.dart';
+import 'services/memories_service.dart';
 import 'memories.dart';
-import 'event_details.dart';
+import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -13,37 +13,37 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String? name;
   List memories = [];
+  final AuthService _authService = AuthService();
+  final MemoriesService _memoriesService = MemoriesService();
   int _selectedIndex = 0;
+  DateTime? selectedDate;
 
   @override
   void initState() {
     super.initState();
     _loadUserInfo();
-    _loadMemories();
+    _loadAllMemories();
   }
 
   Future<void> _loadUserInfo() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? userName = prefs.getString('name');
-
+    String? userName = await _authService.getName();
     setState(() {
       name = userName;
     });
   }
 
-  Future<void> _loadMemories() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('token');
+  Future<void> _loadAllMemories() async {
+    final memoryList = await _memoriesService.getAllMemories();
+    setState(() {
+      memories = memoryList;
+    });
+  }
 
-    final response = await http.get(
-      Uri.parse('http://192.168.5.153:3000/memories?token=$token&date=${DateTime.now().toIso8601String().split('T')[0]}'),
-    );
-
-    if (response.statusCode == 200) {
-      setState(() {
-        memories = jsonDecode(response.body);
-      });
-    }
+  Future<void> _loadMemoriesByDate(String date) async {
+    final memoryList = await _memoriesService.getMemoriesByDate(date);
+    setState(() {
+      memories = memoryList;
+    });
   }
 
   void _onItemTapped(int index) {
@@ -59,7 +59,7 @@ class _HomePageState extends State<HomePage> {
       arguments: eventId,
     ).then((value) {
       if (value == true) {
-        _loadMemories();
+        _loadAllMemories();
       }
     });
   }
@@ -68,19 +68,43 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     List<Widget> _pages = <Widget>[
       Center(
-        child: memories.isEmpty
-            ? name == null
-            ? CircularProgressIndicator()
-            : Text('Hello, $name', style: Theme.of(context).textTheme.headlineMedium)
-            : ListView.builder(
-          itemCount: memories.length,
-          itemBuilder: (context, index) {
-            return ListTile(
-              title: Text(memories[index]['event']),
-              subtitle: Text(memories[index]['emotion']),
-              onTap: () => _onEventTapped(memories[index]['id']),
-            );
-          },
+        child: Column(
+          children: [
+            ElevatedButton(
+              onPressed: () async {
+                DateTime? pickedDate = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(1900),
+                  lastDate: DateTime.now(),
+                );
+                if (pickedDate != null) {
+                  final date = DateFormat('yyyy-MM-dd').format(pickedDate);
+                  setState(() {
+                    selectedDate = pickedDate;
+                  });
+                  _loadMemoriesByDate(date);
+                }
+              },
+              child: Text(selectedDate == null ? 'Select Date' : DateFormat('yyyy-MM-dd').format(selectedDate!)),
+            ),
+            Expanded(
+              child: memories.isEmpty
+                  ? name == null
+                  ? CircularProgressIndicator()
+                  : Text('Hello, $name', style: Theme.of(context).textTheme.headlineMedium)
+                  : ListView.builder(
+                itemCount: memories.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(memories[index]['event']),
+                    subtitle: Text(memories[index]['emotion']),
+                    onTap: () => _onEventTapped(memories[index]['id']),
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
       MemoriesPage(),
@@ -93,9 +117,7 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             icon: Icon(Icons.logout),
             onPressed: () async {
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              await prefs.remove('token');
-              await prefs.remove('name');
+              await _authService.logout();
               Navigator.pushReplacementNamed(context, '/login');
             },
           )

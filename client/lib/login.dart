@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'services/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -12,30 +10,15 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   String email = '';
   String password = '';
+  final AuthService _authService = AuthService();
 
   Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
-      final response = await http.post(
-        Uri.parse('http://192.168.5.153:3000/login'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, String>{
-          'email': email,
-          'password': password,
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        final token = data['token'];
-        final name = data['name'];
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('token', token);
-        await prefs.setString('name', name);
+      bool success = await _authService.login(email, password);
+      if (success) {
         Navigator.pushReplacementNamed(context, '/home');
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to log in')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Login failed')));
       }
     }
   }
@@ -50,11 +33,10 @@ class _LoginPageState extends State<LoginPage> {
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
-          child: ListView(
+          child: Column(
             children: <Widget>[
               TextFormField(
                 decoration: InputDecoration(labelText: 'Email'),
-                keyboardType: TextInputType.emailAddress,
                 onChanged: (value) {
                   setState(() {
                     email = value;

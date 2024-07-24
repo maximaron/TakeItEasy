@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'services/memories_service.dart';
 import 'package:intl/intl.dart';
 
 class MemoriesPage extends StatefulWidget {
@@ -15,13 +13,11 @@ class _MemoriesPageState extends State<MemoriesPage> {
   String emotion = '';
   String details = '';
   DateTime? occurredAt;
-  TimeOfDay? occurredTime = TimeOfDay.now();
+  TimeOfDay? occurredTime = TimeOfDay.now(); // Инициализация текущим временем
+  final MemoriesService _memoriesService = MemoriesService();
 
   Future<void> _addMemory() async {
     if (_formKey.currentState!.validate()) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? token = prefs.getString('token');
-
       if (occurredAt == null || occurredTime == null) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please select date and time')));
         return;
@@ -35,21 +31,8 @@ class _MemoriesPageState extends State<MemoriesPage> {
         occurredTime!.minute,
       );
 
-      final response = await http.post(
-        Uri.parse('http://192.168.5.153:3000/memories'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, String>{
-          'token': token!,
-          'event': event,
-          'emotion': emotion,
-          'details': details,
-          'occurred_at': dateTime.toIso8601String(),
-        }),
-      );
-
-      if (response.statusCode == 201) {
+      bool success = await _memoriesService.addMemory(event, emotion, details, dateTime);
+      if (success) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Memory added successfully!')));
         Navigator.pushReplacementNamed(context, '/home');
       } else {

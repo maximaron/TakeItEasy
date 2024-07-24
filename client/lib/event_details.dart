@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'services/memories_service.dart';
 import 'package:intl/intl.dart';
 
 class EventDetailsPage extends StatefulWidget {
@@ -20,7 +19,8 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
   String emotion = '';
   String details = '';
   DateTime? occurredAt;
-  TimeOfDay? occurredTime = TimeOfDay.now();
+  TimeOfDay? occurredTime = TimeOfDay.now(); // Инициализация текущим временем
+  final MemoriesService _memoriesService = MemoriesService();
 
   @override
   void initState() {
@@ -29,15 +29,8 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
   }
 
   Future<void> _loadEventDetails() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('token');
-
-    final response = await http.get(
-      Uri.parse('http://192.168.5.153:3000/event?token=$token&id=${widget.eventId}'),
-    );
-
-    if (response.statusCode == 200) {
-      final eventDetails = jsonDecode(response.body);
+    final eventDetails = await _memoriesService.getMemoryById(widget.eventId);
+    if (eventDetails != null) {
       setState(() {
         event = eventDetails['event'];
         emotion = eventDetails['emotion'];
@@ -50,9 +43,6 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
 
   Future<void> _updateEvent() async {
     if (_formKey.currentState!.validate()) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? token = prefs.getString('token');
-
       if (occurredAt == null || occurredTime == null) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please select date and time')));
         return;
@@ -66,22 +56,8 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
         occurredTime!.minute,
       ).toUtc();
 
-      final response = await http.put(
-        Uri.parse('http://192.168.5.153:3000/event'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, String>{
-          'token': token!,
-          'id': widget.eventId.toString(),
-          'event': event,
-          'emotion': emotion,
-          'details': details,
-          'occurred_at': dateTime.toIso8601String(),
-        }),
-      );
-
-      if (response.statusCode == 200) {
+      bool success = await _memoriesService.updateMemory(widget.eventId, event, emotion, details, dateTime);
+      if (success) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Event updated successfully!')));
         setState(() {
           isEditing = false;
@@ -94,21 +70,8 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
   }
 
   Future<void> _deleteEvent() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('token');
-
-    final response = await http.delete(
-      Uri.parse('http://192.168.5.153:3000/event'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        'token': token!,
-        'id': widget.eventId.toString(),
-      }),
-    );
-
-    if (response.statusCode == 200) {
+    bool success = await _memoriesService.deleteMemory(widget.eventId);
+    if (success) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Event deleted successfully!')));
       Navigator.pop(context, true);
     } else {
