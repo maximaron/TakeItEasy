@@ -37,9 +37,9 @@ class AppTheme {
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           backgroundColor: Colors.green,
-          foregroundColor: Colors.black, // This sets the text color
+          foregroundColor: Colors.black,
           textStyle: const TextStyle(
-            color: Colors.black, // Setting text color to black
+            color: Colors.black,
             fontWeight: FontWeight.bold,
           ),
         ),
