@@ -83,7 +83,7 @@ class _MusicListPageState extends State<MusicListPage> {
         children: [
           FloatingActionButton(
             onPressed: _playerState == PlayerState.playing ? _pauseMusic : () => _playMusic(_currentFilePath!),
-            backgroundColor: Colors.blue,
+            backgroundColor: _playerState == PlayerState.playing ? Colors.red : Colors.blue,
             foregroundColor: Colors.white,
             child: Icon(_playerState == PlayerState.playing ? Icons.pause : Icons.play_arrow),
             tooltip: _playerState == PlayerState.playing ? 'Pause Music' : 'Play Music',
