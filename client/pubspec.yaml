@@ -32,6 +32,8 @@ dependencies:
     sdk: flutter
   shared_preferences: ^2.0.6
   intl: ^0.17.0
+  just_audio: ^0.9.39
+  audioplayers: ^6.0.0
 
 
 
@@ -56,10 +58,10 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
-  # The following line ensures that the Material Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
+  assets:
+    - assets/audio/autumn-sky-meditation-7618.mp3
+    - assets/audio/deep-meditation-192828.mp3
+    - assets/audio/the-old-water-mill-meditation-8005.mp3
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:

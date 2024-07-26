@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MemoriesService {
-  final String baseUrl = 'http://192.168.5.5:3000';
+  final String baseUrl = 'http://192.168.5.209:3000';
 
   Future<List> getAllMemories() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

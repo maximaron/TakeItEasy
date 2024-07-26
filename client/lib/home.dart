@@ -3,10 +3,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'services/auth_service.dart';
 import 'services/memories_service.dart';
 import 'memories.dart';
+import 'music_list.dart';
 import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -135,6 +136,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       const MemoriesPage(),
+      const MusicListPage(),
     ];
 
     return Scaffold(
@@ -148,6 +150,10 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.photo_album),
             label: 'Memories',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.music_note),
+            label: 'Music',
           ),
         ],
         currentIndex: _selectedIndex,

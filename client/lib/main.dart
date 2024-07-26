@@ -4,6 +4,7 @@ import 'register.dart';
 import 'login.dart';
 import 'home.dart';
 import 'memories.dart';
+import 'music_list.dart';
 import 'event_details.dart';
 
 void main() {
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginPage(),
         '/home': (context) => const HomePage(),
         '/memories': (context) => const MemoriesPage(),
+        '/music' : (context) => const MusicListPage(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == '/event-details') {
