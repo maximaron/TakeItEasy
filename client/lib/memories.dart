@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'services/memories_service.dart';
 import 'package:intl/intl.dart';
+import 'components/gradient_button.dart';
 
 class MemoriesPage extends StatefulWidget {
   const MemoriesPage({super.key});
@@ -72,6 +73,7 @@ class _MemoriesPageState extends State<MemoriesPage> {
                   return null;
                 },
               ),
+              const SizedBox(height: 8.0), // Add space between Event and Emotion
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Emotion'),
                 onChanged: (value) {
@@ -86,6 +88,7 @@ class _MemoriesPageState extends State<MemoriesPage> {
                   return null;
                 },
               ),
+              const SizedBox(height: 8.0), // Add space between Emotion and Details
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Details (optional)'),
                 onChanged: (value) {
@@ -94,7 +97,8 @@ class _MemoriesPageState extends State<MemoriesPage> {
                   });
                 },
               ),
-              TextButton(
+              const SizedBox(height: 16.0), // Add space between Details and Select Date
+              GradientButton(
                 child: Text(occurredAt == null ? 'Select Date' : dateFormat.format(occurredAt!)),
                 onPressed: () async {
                   DateTime? pickedDate = await showDatePicker(
@@ -110,7 +114,7 @@ class _MemoriesPageState extends State<MemoriesPage> {
                   }
                 },
               ),
-              TextButton(
+              GradientButton(
                 child: Text(occurredTime == null ? timeFormat.format(DateTime.now()) : occurredTime!.format(context)),
                 onPressed: () async {
                   TimeOfDay? pickedTime = await showTimePicker(
@@ -124,7 +128,7 @@ class _MemoriesPageState extends State<MemoriesPage> {
                   }
                 },
               ),
-              ElevatedButton(
+              GradientButton(
                 onPressed: _addMemory,
                 child: const Text('Add Memory'),
               ),

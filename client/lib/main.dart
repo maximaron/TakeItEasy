@@ -6,6 +6,7 @@ import 'home.dart';
 import 'memories.dart';
 import 'music_list.dart';
 import 'event_details.dart';
+import 'theme.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,16 +19,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Auth Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: AppTheme.theme,
       home: const AuthCheckPage(),
       routes: {
         '/register': (context) => const RegisterPage(),
         '/login': (context) => const LoginPage(),
         '/home': (context) => const HomePage(),
         '/memories': (context) => const MemoriesPage(),
-        '/music' : (context) => const MusicListPage(),
+        '/music': (context) => const MusicListPage(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == '/event-details') {

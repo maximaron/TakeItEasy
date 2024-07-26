@@ -113,7 +113,13 @@ class _HomePageState extends State<HomePage> {
                     _loadMemoriesByDate(date);
                   }
                 },
-                child: Text(selectedDate == null ? 'Select Date' : DateFormat('yyyy-MM-dd').format(selectedDate!)),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                ),
+                child: DefaultTextStyle(
+                  style: const TextStyle(color: Colors.white),
+                  child:Text(selectedDate == null ? 'Select Date' : DateFormat('yyyy-MM-dd').format(selectedDate!)),
+    )
               ),
               Expanded(
                 child: memories.isEmpty
